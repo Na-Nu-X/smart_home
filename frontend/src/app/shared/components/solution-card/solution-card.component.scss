@@ -1,0 +1,142 @@
+@use 'mixins' as m;
+
+:host {
+  display: block;
+  height: 100%;
+}
+
+.card {
+  @include m.card;
+  @include m.card-hover;
+  @include m.zoom-trigger;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+
+  &__media {
+    @include m.zoom-media('16 / 11');
+  }
+
+  &__domain {
+    position: absolute;
+    left: 1rem;
+    bottom: 1rem;
+    max-width: calc(100% - 2rem);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background: rgba(20, 22, 25, 0.62);
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    flex: 1;
+    padding: 1.4rem 1.4rem 1.25rem;
+  }
+
+  &__title {
+    font-size: 1.32rem;
+    line-height: 1.25;
+  }
+
+  &__link {
+    text-decoration: none;
+
+    // Stretched link – the whole card is clickable.
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+    }
+
+    &:focus-visible {
+      outline: none;
+
+      &::after {
+        outline: 2px solid var(--color-accent);
+        outline-offset: -4px;
+        border-radius: var(--radius-card);
+      }
+    }
+  }
+
+  &__desc {
+    @include m.line-clamp(3);
+    font-size: 0.92rem;
+    line-height: 1.6;
+    color: var(--color-ink-2);
+  }
+
+  &__protocols {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 0;
+    padding: 0;
+  }
+
+  &__energy {
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-start;
+    font-size: 0.82rem;
+    font-weight: 500;
+    line-height: 1.45;
+    color: var(--color-energy-ink);
+
+    ::ng-deep svg {
+      flex-shrink: 0;
+      width: 16px;
+      height: 16px;
+      margin-top: 1px;
+      color: var(--color-energy);
+    }
+  }
+
+  &__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: auto;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  &__price {
+    font-size: 0.85rem;
+    color: var(--color-ink-3);
+
+    strong {
+      font-size: 1.05rem;
+      color: var(--color-ink);
+    }
+  }
+
+  &__arrow {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 1px solid var(--color-border);
+    transition:
+      background-color var(--duration-base),
+      color var(--duration-base),
+      border-color var(--duration-base);
+
+    ::ng-deep svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+
+  &:hover &__arrow {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+    color: var(--color-on-accent);
+  }
+}

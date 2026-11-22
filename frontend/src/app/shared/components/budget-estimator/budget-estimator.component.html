@@ -1,0 +1,153 @@
+<div class="estimator">
+  <div class="estimator__config">
+    <!-- 1. Property type -->
+    <fieldset class="step">
+      <legend class="step__legend"><span class="step__num">1</span> Typ nehnuteľnosti</legend>
+      <div class="step__options step__options--3" role="radiogroup" aria-label="Typ nehnuteľnosti">
+        @for (option of propertyTypes; track option.value) {
+          <button
+            type="button"
+            role="radio"
+            class="option-card"
+            [attr.aria-checked]="propertyType() === option.value"
+            (click)="propertyType.set(option.value)"
+          >
+            <span class="option-card__icon"><app-icon [name]="option.icon" /></span>
+            <span>
+              <span class="option-card__title">{{ option.label }}</span>
+              <span class="option-card__desc">{{ option.description }}</span>
+            </span>
+          </button>
+        }
+      </div>
+    </fieldset>
+
+    <!-- 2. Floor area -->
+    <fieldset class="step">
+      <legend class="step__legend"><span class="step__num">2</span> Úžitková plocha</legend>
+      <div class="area">
+        <div class="area__value">
+          <output for="estimator-area" class="num">{{ areaSqm() | num }}</output>
+          <span>m²</span>
+        </div>
+        <input
+          id="estimator-area"
+          type="range"
+          class="range"
+          [min]="area.min"
+          [max]="area.max"
+          [step]="area.step"
+          [value]="areaSqm()"
+          [style.--fill]="areaFill() + '%'"
+          (input)="onAreaInput($event)"
+          aria-label="Úžitková plocha v m²"
+          [attr.aria-valuetext]="areaSqm() + ' m²'"
+        />
+        <div class="area__scale num" aria-hidden="true">
+          <span>{{ area.min }} m²</span>
+          <span>{{ area.max }} m²</span>
+        </div>
+      </div>
+    </fieldset>
+
+    <!-- 3. Construction stage -->
+    <fieldset class="step">
+      <legend class="step__legend"><span class="step__num">3</span> Fáza stavby</legend>
+      <div class="step__options step__options--2" role="radiogroup" aria-label="Fáza stavby">
+        @for (option of stages; track option.value) {
+          <button
+            type="button"
+            role="radio"
+            class="option-card"
+            [attr.aria-checked]="stage() === option.value"
+            (click)="stage.set(option.value)"
+          >
+            <span class="option-card__icon"><app-icon [name]="option.icon" /></span>
+            <span>
+              <span class="option-card__title">{{ option.label }}</span>
+              <span class="option-card__desc">{{ option.description }}</span>
+            </span>
+          </button>
+        }
+      </div>
+    </fieldset>
+
+    <!-- 4. Modules -->
+    <fieldset class="step">
+      <legend class="step__legend">
+        <span class="step__num">4</span> Požadované smart moduly
+        <span class="step__count num">{{ selectedCount() }} / {{ modules.length }}</span>
+      </legend>
+      <div class="step__options step__options--modules">
+        @for (module of modules; track module.key) {
+          <button
+            type="button"
+            class="option-card option-card--module"
+            [attr.aria-pressed]="isSelected(module.key)"
+            (click)="toggleModule(module.key)"
+          >
+            <span class="option-card__icon"><app-icon [name]="module.icon" /></span>
+            <span>
+              <span class="option-card__title">{{ module.label }}</span>
+              <span class="option-card__desc">{{ module.description }}</span>
+            </span>
+            <span class="option-card__check" aria-hidden="true"><app-icon name="check" [strokeWidth]="2.5" /></span>
+          </button>
+        }
+      </div>
+    </fieldset>
+  </div>
+
+  <aside class="estimator__result" aria-live="polite">
+    <div class="result">
+      @if (result(); as r) {
+        <p class="result__label">Orientačná investícia na kľúč</p>
+        <p class="result__price num">
+          {{ r.minEur | eur }} <span class="result__dash">–</span> {{ r.maxEur | eur }}
+        </p>
+        <p class="result__vat">vrátane projektu, rozvádzača, montáže a programovania, bez DPH</p>
+
+        <div class="result__savings">
+          <div>
+            <p class="result__label">Odhadovaná ročná úspora energií</p>
+            <p class="result__savings-value num">až {{ r.savingsPercent }} %</p>
+          </div>
+          <p class="result__savings-eur num">≈ {{ r.annualSavingsEur | eur }} <span>ročne</span></p>
+        </div>
+        <div class="result__bar" aria-hidden="true">
+          <span [style.width.%]="(r.savingsPercent / 35) * 100"></span>
+        </div>
+
+        <div class="result__arch">
+          <p class="result__label">Odporúčaná architektúra systému</p>
+          <p class="result__arch-title">
+            <app-icon [name]="r.architecture.key === 'wireless' ? 'wifi' : 'cable'" />
+            {{ r.architecture.title }}
+          </p>
+          <p class="result__arch-desc">{{ r.architecture.description }}</p>
+          <ul class="result__highlights" role="list">
+            @for (item of r.architecture.highlights; track item) {
+              <li><app-icon name="check" /> {{ item }}</li>
+            }
+          </ul>
+        </div>
+
+        <button type="button" class="btn btn--primary btn--lg btn--block" (click)="requestProject()">
+          Získať presný projekt a ponuku
+          <app-icon name="arrow-right" />
+        </button>
+        <p class="result__disclaimer">
+          Kalkulácia je orientačná. Presnú cenu pripravíme po konzultácii a analýze pôdorysu – zadarmo a nezáväzne.
+        </p>
+      } @else {
+        <div class="result__empty">
+          <app-icon name="sparkle" />
+          <p class="result__arch-title">Vyberte aspoň jeden smart modul</p>
+          <p class="result__arch-desc">
+            Zvoľte, čo má váš dom robiť sám – osvetlenie, tienenie, vykurovanie, energiu, zabezpečenie alebo audio.
+          </p>
+        </div>
+      }
+    </div>
+  </aside>
+</div>

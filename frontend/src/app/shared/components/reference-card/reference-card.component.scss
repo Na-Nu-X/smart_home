@@ -1,0 +1,123 @@
+@use 'mixins' as m;
+
+:host {
+  display: block;
+  height: 100%;
+}
+
+.ref {
+  @include m.card;
+  @include m.card-hover;
+  @include m.zoom-trigger;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+
+  &__media {
+    @include m.zoom-media('4 / 3');
+  }
+
+  &--large &__media {
+    aspect-ratio: 16 / 10;
+  }
+
+  &__type {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    background: rgba(20, 22, 25, 0.62);
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    flex: 1;
+    padding: 1.4rem;
+  }
+
+  &__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1rem;
+    font-size: 0.8rem;
+    color: var(--color-ink-3);
+
+    span {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    ::ng-deep svg {
+      width: 14px;
+      height: 14px;
+    }
+  }
+
+  &__title {
+    font-size: 1.3rem;
+    line-height: 1.25;
+  }
+
+  &--large &__title {
+    font-size: clamp(1.4rem, 1.2rem + 0.8vw, 1.85rem);
+  }
+
+  &__link {
+    text-decoration: none;
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+    }
+
+    &:focus-visible {
+      outline: none;
+
+      &::after {
+        outline: 2px solid var(--color-accent);
+        outline-offset: -4px;
+        border-radius: var(--radius-card);
+      }
+    }
+  }
+
+  &__platform {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--color-protocol-ink);
+
+    ::ng-deep svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+
+  &__benefit {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    margin-top: auto;
+    padding-top: 0.9rem;
+    border-top: 1px solid var(--color-border);
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--color-energy-ink);
+    @include m.tabular;
+
+    ::ng-deep svg {
+      flex-shrink: 0;
+      width: 18px;
+      height: 18px;
+      color: var(--color-energy);
+    }
+  }
+}

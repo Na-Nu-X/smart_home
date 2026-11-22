@@ -1,0 +1,99 @@
+<footer class="footer">
+  <div class="container">
+    <div class="footer__cta">
+      <div>
+        <p class="eyebrow">Showroom & konzultácia</p>
+        <h2 class="footer__cta-title">Zažite inteligentný dom <em>naživo</em>, skôr než sa rozhodnete.</h2>
+      </div>
+      <div class="footer__cta-actions">
+        <a routerLink="/konzultacia" [queryParams]="{ goal: 'navsteva_showroomu' }" class="btn btn--primary btn--lg">
+          Rezervovať návštevu showroomu
+          <app-icon name="arrow-right" />
+        </a>
+        <a [href]="config.contact.phoneHref" class="btn btn--ghost-light btn--lg">
+          <app-icon name="phone" /> {{ config.contact.phone }}
+        </a>
+      </div>
+    </div>
+
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <app-wordmark [light]="true" />
+        <p>{{ config.company.tagline }}.</p>
+        <ul class="footer__badges" role="list">
+          @for (badge of config.partnerBadges; track badge.label) {
+            <li><app-icon name="badge" /> {{ badge.label }}</li>
+          }
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="footer__heading">Showroom</h3>
+        <address class="footer__address">
+          <a [href]="config.showroom.mapUrl" target="_blank" rel="noopener">
+            {{ config.showroom.name }}<br />
+            {{ config.showroom.street }}<br />
+            {{ config.showroom.postalCode }} {{ config.showroom.city }}
+          </a>
+        </address>
+        <dl class="footer__hours">
+          @for (item of config.showroom.openingHours; track item.days) {
+            <div>
+              <dt>{{ item.days }}</dt>
+              <dd class="num">{{ item.hours }}</dd>
+            </div>
+          }
+        </dl>
+      </div>
+
+      <div>
+        <h3 class="footer__heading">Ukážkový dom</h3>
+        <p class="footer__note">{{ config.showroom.demoHouseNote }}</p>
+        <a routerLink="/konzultacia" [queryParams]="{ goal: 'navsteva_showroomu' }" class="footer__link-arrow">
+          Dohodnúť privátnu prehliadku <app-icon name="arrow-right" />
+        </a>
+      </div>
+
+      <div>
+        <h3 class="footer__heading">Navigácia</h3>
+        <ul class="footer__links" role="list">
+          @for (link of links; track link.path) {
+            <li><a [routerLink]="link.path">{{ link.label }}</a></li>
+          }
+          <li><a routerLink="/konzultacia">Nezáväzná ponuka</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="footer__heading">Kontakt</h3>
+        <ul class="footer__links" role="list">
+          <li><a [href]="config.contact.phoneHref" class="num">{{ config.contact.phone }}</a></li>
+          <li><a [href]="'mailto:' + config.contact.consultationEmail">{{ config.contact.consultationEmail }}</a></li>
+          <li><a [href]="'mailto:' + config.contact.partnersEmail">{{ config.contact.partnersEmail }}</a></li>
+        </ul>
+        <ul class="footer__social" role="list">
+          @for (social of config.socialLinks; track social.network) {
+            <li>
+              <a [href]="social.url" target="_blank" rel="noopener" [attr.aria-label]="social.label">
+                <app-icon [name]="social.network" />
+              </a>
+            </li>
+          }
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer__legal">
+      <p class="footer__gdpr">
+        {{ config.legal.gdprNotice }}
+        <a [routerLink]="config.legal.privacyPolicyUrl">Zásady ochrany osobných údajov</a>
+      </p>
+      <p class="footer__company">
+        © {{ year }} {{ config.company.legalName }} · IČO: <span class="num">{{ config.company.ico }}</span> · DIČ:
+        <span class="num">{{ config.company.dic }}</span> · IČ DPH: <span class="num">{{ config.company.icDph }}</span>
+        <br />
+        {{ config.company.registry }}
+      </p>
+    </div>
+  </div>
+</footer>

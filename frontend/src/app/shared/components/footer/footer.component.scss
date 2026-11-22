@@ -1,0 +1,220 @@
+@use 'mixins' as m;
+
+.footer {
+  @include m.dark-surface;
+  padding-top: clamp(3.5rem, 3rem + 3vw, 6rem);
+  padding-bottom: 2rem;
+  font-size: 0.92rem;
+
+  a {
+    color: var(--color-on-dark-2);
+    text-decoration: none;
+    transition: color var(--duration-fast);
+
+    &:hover {
+      color: var(--color-on-dark);
+    }
+  }
+
+  .eyebrow {
+    color: var(--color-accent);
+  }
+
+  &__cta {
+    display: grid;
+    gap: 2rem;
+    padding-bottom: clamp(3rem, 2.5rem + 2vw, 4.5rem);
+    margin-bottom: clamp(3rem, 2.5rem + 2vw, 4.5rem);
+    border-bottom: 1px solid var(--color-on-dark-border);
+
+    @include m.mq(lg) {
+      grid-template-columns: 1.3fr auto;
+      align-items: end;
+    }
+  }
+
+  &__cta-title {
+    margin-top: 1rem;
+    max-width: 20ch;
+    font-size: clamp(1.9rem, 1.4rem + 2vw, 3rem);
+
+    em {
+      color: var(--color-accent);
+      font-style: italic;
+      font-weight: 300;
+    }
+  }
+
+  &__cta-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+
+    .btn--primary {
+      color: var(--color-on-accent);
+    }
+
+    .btn--primary:hover {
+      color: #fff;
+    }
+
+    .btn--ghost-light {
+      color: var(--color-on-dark);
+    }
+  }
+
+  &__grid {
+    display: grid;
+    gap: 2.5rem;
+
+    @include m.mq(md) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @include m.mq(lg) {
+      grid-template-columns: 1.4fr 1fr 1.2fr 0.9fr 1.1fr;
+      gap: 2rem;
+    }
+  }
+
+  &__brand p {
+    margin-block: 1rem 1.25rem;
+    max-width: 28ch;
+    color: var(--color-on-dark-2);
+  }
+
+  &__badges {
+    display: grid;
+    gap: 0.5rem;
+    margin: 0;
+
+    li {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--color-on-dark);
+    }
+
+    ::ng-deep svg {
+      width: 16px;
+      height: 16px;
+      color: #34d399;
+    }
+  }
+
+  &__heading {
+    margin-bottom: 1rem;
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-on-dark);
+  }
+
+  &__address {
+    font-style: normal;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+
+  &__hours {
+    display: grid;
+    gap: 0.3rem;
+    font-size: 0.85rem;
+
+    div {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    dt {
+      color: var(--color-on-dark-2);
+    }
+
+    dd {
+      margin: 0;
+      color: var(--color-on-dark);
+    }
+  }
+
+  &__note {
+    color: var(--color-on-dark-2);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+
+  &__link-arrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-weight: 600;
+    color: var(--color-accent) !important;
+
+    ::ng-deep svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+
+  &__links {
+    display: grid;
+    gap: 0.55rem;
+    margin: 0;
+  }
+
+  &__social {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1.25rem;
+
+    a {
+      display: grid;
+      place-items: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid var(--color-on-dark-border);
+
+      &:hover {
+        border-color: var(--color-on-dark);
+      }
+    }
+
+    ::ng-deep svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  &__legal {
+    display: grid;
+    gap: 1rem;
+    margin-top: clamp(3rem, 2.5rem + 2vw, 4.5rem);
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-on-dark-border);
+    font-size: 0.78rem;
+    line-height: 1.6;
+    color: rgba(250, 249, 246, 0.56);
+
+    @include m.mq(lg) {
+      grid-template-columns: 1.2fr 1fr;
+      gap: 3rem;
+    }
+
+    a {
+      color: var(--color-on-dark);
+      text-decoration: underline;
+      text-underline-offset: 0.2em;
+    }
+  }
+
+  &__company {
+    @include m.mq(lg) {
+      text-align: right;
+    }
+  }
+}
