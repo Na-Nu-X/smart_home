@@ -1,0 +1,150 @@
+@switch (state().status) {
+  @case ('loading') {
+    <div class="skeleton" style="height: 70vh; border-radius: 0"></div>
+  }
+  @case ('error') {
+    <div class="container--narrow section not-found">
+      <p class="eyebrow">Realizácia sa nenašla</p>
+      <h1 class="h2">Táto realizácia neexistuje alebo bola presunutá.</h1>
+      <a routerLink="/realizacie" class="btn btn--primary">Späť na realizácie</a>
+    </div>
+  }
+  @default {
+    @if (reference(); as r) {
+      <!-- HERO -->
+      <section class="hero">
+        <img class="hero__img" [src]="r.cover_image_url | img: 2000" [alt]="r.title" />
+        <div class="container hero__inner">
+          <nav class="breadcrumb" aria-label="Omrvinková navigácia">
+            <a routerLink="/realizacie">Realizácie</a>
+            <app-icon name="chevron-right" />
+            <a routerLink="/realizacie" [queryParams]="{ typ: r.property_type }">{{ r.property_type_display }}</a>
+          </nav>
+          <h1 class="fade-in">{{ r.title }}</h1>
+          @if (r.measured_benefit) {
+            <p class="hero__benefit"><app-icon name="leaf" /> {{ r.measured_benefit }}</p>
+          }
+        </div>
+      </section>
+
+      <!-- SPECS -->
+      <section class="specs" aria-label="Parametre projektu">
+        <div class="container">
+          <dl class="specs__list">
+            <div>
+              <dt>Typ</dt>
+              <dd>{{ r.property_type_display }}</dd>
+            </div>
+            <div>
+              <dt>Lokalita</dt>
+              <dd>{{ r.location_city }}</dd>
+            </div>
+            <div>
+              <dt>Úžitková plocha</dt>
+              <dd class="num">{{ r.floor_area_sqm | num }} m²</dd>
+            </div>
+            <div>
+              <dt>Platforma</dt>
+              <dd>{{ r.system_platform }}</dd>
+            </div>
+            @if (r.completion_year) {
+              <div>
+                <dt>Dokončené</dt>
+                <dd class="num">{{ r.completion_year }}</dd>
+              </div>
+            }
+          </dl>
+        </div>
+      </section>
+
+      <!-- STORY -->
+      <section class="section">
+        <div class="container story">
+          <div class="story__vision">
+            <p class="eyebrow">Vízia klienta</p>
+            <p class="story__quote">{{ r.client_vision }}</p>
+          </div>
+          <aside class="story__features">
+            <h2 class="h3">Realizované funkcie</h2>
+            <ul class="check-list">
+              @for (feature of r.implemented_features; track feature) {
+                <li><app-icon name="check" /> <span class="num">{{ feature }}</span></li>
+              }
+            </ul>
+            @if (r.measured_benefit) {
+              <div class="story__benefit">
+                <p class="eyebrow">Nameraný prínos</p>
+                <p class="num">{{ r.measured_benefit }}</p>
+              </div>
+            }
+          </aside>
+        </div>
+      </section>
+
+      <!-- GALLERY -->
+      @if (photos().length) {
+        <section class="section section--surface">
+          <div class="container">
+            <div class="section-head">
+              <p class="eyebrow">Fotogaléria</p>
+              <h2>Pohľad do <em>projektu</em></h2>
+            </div>
+            <ul class="gallery" role="list">
+              @for (photo of photos(); track photo.id; let i = $index) {
+                <li class="gallery__item" [class.gallery__item--wide]="i === 0">
+                  <button type="button" (click)="openLightbox(i)" [attr.aria-label]="'Zväčšiť fotografiu: ' + photo.caption">
+                    <img [src]="photo.image_url | img: (i === 0 ? 1400 : 900)" [alt]="photo.caption" loading="lazy" />
+                    <span class="gallery__zoom" aria-hidden="true"><app-icon name="expand" /></span>
+                  </button>
+                  @if (photo.caption) {
+                    <p class="gallery__caption">{{ photo.caption }}</p>
+                  }
+                </li>
+              }
+            </ul>
+          </div>
+        </section>
+      }
+
+      <!-- CTA -->
+      <section class="section--tight">
+        <div class="container">
+          <div class="cta-band">
+            <div>
+              <h2 class="h3">Plánujete podobný projekt?</h2>
+              <p>Pošlite nám pôdorys a pripravíme návrh riešenia aj orientačný rozpočet.</p>
+            </div>
+            <a routerLink="/konzultacia" [queryParams]="similarParams()" class="btn btn--primary btn--lg">
+              Chcem podobné riešenie <app-icon name="arrow-right" />
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- LIGHTBOX -->
+      @if (lightboxPhoto(); as photo) {
+        <div class="lightbox" role="dialog" aria-modal="true" [attr.aria-label]="photo.caption || r.title">
+          <button type="button" class="lightbox__backdrop" (click)="closeLightbox()" aria-label="Zavrieť"></button>
+          <figure class="lightbox__figure">
+            <img [src]="photo.image_url | img: 2000" [alt]="photo.caption" />
+            <figcaption>
+              <span>{{ photo.caption }}</span>
+              <span class="num">{{ (lightboxIndex() ?? 0) + 1 }} / {{ photos().length }}</span>
+            </figcaption>
+          </figure>
+          <button type="button" class="lightbox__btn lightbox__btn--close" (click)="closeLightbox()" aria-label="Zavrieť galériu">
+            <app-icon name="close" />
+          </button>
+          @if (photos().length > 1) {
+            <button type="button" class="lightbox__btn lightbox__btn--prev" (click)="step(-1)" aria-label="Predchádzajúca fotografia">
+              <app-icon name="chevron-left" />
+            </button>
+            <button type="button" class="lightbox__btn lightbox__btn--next" (click)="step(1)" aria-label="Ďalšia fotografia">
+              <app-icon name="chevron-right" />
+            </button>
+          }
+        </div>
+      }
+    }
+  }
+}

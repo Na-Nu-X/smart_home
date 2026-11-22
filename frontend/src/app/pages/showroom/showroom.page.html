@@ -1,0 +1,132 @@
+<!-- HERO -->
+<section class="hero">
+  <div class="container hero__grid">
+    <div class="hero__content fade-in">
+      <p class="eyebrow">Showroom & Proces</p>
+      <h1>Inteligentný dom si najprv <em>vyskúšajte</em>.</h1>
+      <p class="lead">
+        V našom showroome si naživo vyskúšate svetlo, tienenie, multi-room audio aj aplikáciu. Bez technického
+        žargónu a bez tlaku – len vy, káva a systémový architekt, ktorý odpovie na každú otázku.
+      </p>
+      <div class="cluster">
+        <a routerLink="/konzultacia" [queryParams]="{ goal: 'navsteva_showroomu' }" class="btn btn--primary btn--lg">
+          Rezervovať návštevu <app-icon name="arrow-right" />
+        </a>
+        <a [routerLink]="[]" fragment="proces" class="btn btn--ghost btn--lg">Ako prebieha realizácia</a>
+      </div>
+    </div>
+    <div class="hero__visual fade-in">
+      <img [src]="heroImage" alt="Interiér showroomu s večernou svetelnou scénou" />
+      <div class="info-card">
+        <h2 class="info-card__title">{{ config.showroom.name }}</h2>
+        <p class="info-card__row">
+          <app-icon name="map-pin" />
+          <a [href]="config.showroom.mapUrl" target="_blank" rel="noopener">
+            {{ config.showroom.street }}, {{ config.showroom.postalCode }} {{ config.showroom.city }}
+          </a>
+        </p>
+        <dl class="info-card__hours">
+          @for (item of config.showroom.openingHours; track item.days) {
+            <div>
+              <dt>{{ item.days }}</dt>
+              <dd class="num">{{ item.hours }}</dd>
+            </div>
+          }
+        </dl>
+        <p class="info-card__note"><app-icon name="info" /> {{ config.showroom.parkingNote }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCES -->
+<section class="section">
+  <div class="container">
+    <div class="section-head section-head--split">
+      <div class="stack">
+        <p class="eyebrow">Čo si u nás vyskúšate</p>
+        <h2>Zažite rozdiel, ktorý sa <em>nedá opísať</em> v katalógu</h2>
+      </div>
+      <p class="lead">
+        Návšteva trvá približne 60 – 90 minút. Odporúčame prísť spolu s partnerom a ideálne aj s vaším
+        architektom – rozhodnutia budú rýchlejšie a istejšie.
+      </p>
+    </div>
+    <div class="experiences">
+      @for (item of experiences; track item.title) {
+        <article class="experience">
+          <span class="experience__icon"><app-icon [name]="item.icon" /></span>
+          <h3 class="h4">{{ item.title }}</h3>
+          <p>{{ item.text }}</p>
+        </article>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- DEMO HOUSE -->
+<section class="section--tight">
+  <div class="container">
+    <div class="demo">
+      <img [src]="detailImage" alt="Detail teplého architektonického osvetlenia" loading="lazy" />
+      <div class="demo__body">
+        <p class="eyebrow">Privátny ukážkový dom</p>
+        <h2 class="h2">Prehliadka obývaného smart domu</h2>
+        <p>{{ config.showroom.demoHouseNote }}</p>
+        <a routerLink="/konzultacia" [queryParams]="{ goal: 'navsteva_showroomu' }" class="btn btn--primary">
+          Požiadať o termín <app-icon name="arrow-right" />
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="section" id="proces">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Ako prebieha realizácia</p>
+      <h2>Päť krokov od prvej kávy po <em>odovzdanie kľúčov</em></h2>
+      <p class="lead">
+        Transparentný proces s jasnými výstupmi v každej fáze. Vždy viete, čo sa deje, kto za to zodpovedá a
+        koľko to bude stáť.
+      </p>
+    </div>
+    <ol class="process" role="list">
+      @for (step of steps; track step.number) {
+        <li class="process__step">
+          <div class="process__marker">
+            <span class="num">{{ step.number }}</span>
+          </div>
+          <div class="process__body">
+            <div class="process__head">
+              <h3>{{ step.title }}</h3>
+              <span class="tag tag--outline"><app-icon name="clock" /> {{ step.duration }}</span>
+            </div>
+            <p>{{ step.text }}</p>
+            <ul class="process__deliverables" role="list">
+              @for (item of step.deliverables; track item) {
+                <li><app-icon name="check" /> {{ item }}</li>
+              }
+            </ul>
+          </div>
+        </li>
+      }
+    </ol>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section section--surface">
+  <div class="container faq-layout">
+    <div class="stack faq-layout__intro">
+      <p class="eyebrow">Časté otázky</p>
+      <h2>Na čo sa nás klienti <em>pýtajú najčastejšie</em></h2>
+      <p class="muted">Nenašli ste odpoveď? Zavolajte nám alebo napíšte – radi poradíme.</p>
+      <div class="cluster">
+        <a [href]="config.contact.phoneHref" class="btn btn--ghost btn--sm"><app-icon name="phone" /> {{ config.contact.phone }}</a>
+      </div>
+    </div>
+    <app-faq-accordion [items]="faq" />
+  </div>
+</section>

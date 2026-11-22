@@ -1,0 +1,343 @@
+<header class="page-hero page-hero--compact">
+  <div class="container">
+    <p class="eyebrow">Nezáväzná ponuka & Návšteva showroomu</p>
+    <h1>Povedzte nám o svojom <em>projekte</em>.</h1>
+    <p class="lead">
+      Tri krátke kroky a máte hotovo. Systémový architekt si váš projekt preštuduje a ozve sa s návrhom
+      ďalšieho postupu – {{ config.contact.responseTime.toLowerCase() }}.
+    </p>
+  </div>
+</header>
+
+<section class="section section--tight">
+  <div class="container layout">
+    <div class="wizard" id="wizard">
+      @if (submittedMessage()) {
+        <div class="success fade-in" role="status">
+          <span class="success__icon"><app-icon name="check" [strokeWidth]="2" /></span>
+          <h2 class="h2">Ďakujeme, váš dopyt je u nás</h2>
+          <p class="lead">{{ submittedMessage() }}</p>
+          <ol class="success__steps" role="list">
+            <li><span class="num">1</span> Systémový architekt si preštuduje vaše podklady.</li>
+            <li><span class="num">2</span> Zavoláme vám a dohodneme konzultáciu alebo návštevu showroomu.</li>
+            <li><span class="num">3</span> Pripravíme návrh riešenia a cenovú ponuku na mieru.</li>
+          </ol>
+          <div class="cluster">
+            <a routerLink="/realizacie" class="btn btn--ghost">Pozrieť realizácie</a>
+            <button type="button" class="btn btn--ghost" (click)="startOver()">Odoslať ďalší dopyt</button>
+          </div>
+        </div>
+      } @else {
+        <!-- Stepper -->
+        <ol class="stepper" role="list">
+          @for (label of stepLabels; track label; let i = $index) {
+            <li>
+              <button
+                type="button"
+                class="stepper__item"
+                [class.is-active]="currentStep() === i"
+                [class.is-done]="currentStep() > i"
+                [attr.aria-current]="currentStep() === i ? 'step' : null"
+                (click)="goTo($any(i))"
+              >
+                <span class="stepper__num num">
+                  @if (currentStep() > i) {
+                    <app-icon name="check" [strokeWidth]="2.4" />
+                  } @else {
+                    {{ i + 1 }}
+                  }
+                </span>
+                <span class="stepper__label">{{ label }}</span>
+              </button>
+            </li>
+          }
+        </ol>
+
+        @if (estimatedBudget()) {
+          <p class="budget-note">
+            <app-icon name="sparkle" />
+            <span>Orientačný rozpočet z kalkulačky: <strong class="num">{{ estimatedBudget() }}</strong></span>
+          </p>
+        }
+
+        <form [formGroup]="form" (ngSubmit)="submit()" novalidate class="wizard__form">
+          <!-- STEP 1 -->
+          @if (currentStep() === 0) {
+            <div class="wizard__step fade-in">
+              <fieldset class="group">
+                <legend class="group__legend">Čo pre vás môžeme urobiť?</legend>
+                <div class="options options--3" role="radiogroup" aria-label="Cieľ dopytu">
+                  @for (option of goals; track option.value) {
+                    <button
+                      type="button"
+                      role="radio"
+                      class="option-card option-card--stack"
+                      [attr.aria-checked]="value().inquiry_goal === option.value"
+                      (click)="setOption('inquiry_goal', option.value)"
+                    >
+                      <span class="option-card__icon"><app-icon [name]="option.icon" /></span>
+                      <span>
+                        <span class="option-card__title">{{ option.label }}</span>
+                        <span class="option-card__desc">{{ option.description }}</span>
+                      </span>
+                    </button>
+                  }
+                </div>
+                @if (error('inquiry_goal'); as msg) {
+                  <p class="field__error">{{ msg }}</p>
+                }
+              </fieldset>
+
+              <fieldset class="group">
+                <legend class="group__legend">Typ nehnuteľnosti</legend>
+                <div class="options options--3" role="radiogroup" aria-label="Typ nehnuteľnosti">
+                  @for (option of propertyTypes; track option.value) {
+                    <button
+                      type="button"
+                      role="radio"
+                      class="option-card option-card--compact"
+                      [attr.aria-checked]="value().property_type === option.value"
+                      (click)="setOption('property_type', option.value)"
+                    >
+                      <span class="option-card__icon"><app-icon [name]="option.icon" /></span>
+                      <span class="option-card__title">{{ option.label }}</span>
+                    </button>
+                  }
+                </div>
+                @if (error('property_type')) {
+                  <p class="field__error">Vyberte typ nehnuteľnosti.</p>
+                }
+              </fieldset>
+
+              <fieldset class="group">
+                <legend class="group__legend">V akej fáze je stavba?</legend>
+                <div class="options options--2" role="radiogroup" aria-label="Fáza stavby">
+                  @for (option of stages; track option.value) {
+                    <button
+                      type="button"
+                      role="radio"
+                      class="option-card option-card--compact"
+                      [attr.aria-checked]="value().construction_stage === option.value"
+                      (click)="setOption('construction_stage', option.value)"
+                    >
+                      <span class="option-card__icon"><app-icon [name]="option.icon" /></span>
+                      <span class="option-card__title">{{ option.label }}</span>
+                    </button>
+                  }
+                </div>
+                @if (error('construction_stage')) {
+                  <p class="field__error">Vyberte fázu stavby.</p>
+                }
+              </fieldset>
+
+              <div class="form-grid">
+                <label class="field">
+                  <span class="field__label">Úžitková plocha (m²) <span class="optional">(nepovinné)</span></span>
+                  <input class="input num" type="number" inputmode="numeric" min="10" formControlName="floor_area_sqm" placeholder="napr. 180" [class.is-invalid]="error('floor_area_sqm')" />
+                  @if (error('floor_area_sqm'); as msg) {
+                    <span class="field__error">{{ msg }}</span>
+                  }
+                </label>
+                <label class="field">
+                  <span class="field__label">Lokalita stavby</span>
+                  <input class="input" formControlName="location_city" autocomplete="address-level2" placeholder="napr. Bratislava – Koliba" [class.is-invalid]="error('location_city')" />
+                  @if (error('location_city'); as msg) {
+                    <span class="field__error">{{ msg }}</span>
+                  }
+                </label>
+              </div>
+            </div>
+          }
+
+          <!-- STEP 2 -->
+          @if (currentStep() === 1) {
+            <div class="wizard__step fade-in">
+              <fieldset class="group">
+                <legend class="group__legend">
+                  O ktoré smart moduly máte záujem?
+                  <span class="optional">vyberte ľubovoľný počet</span>
+                </legend>
+                <div class="options options--2">
+                  @for (module of smartModules; track module.key) {
+                    <button
+                      type="button"
+                      class="option-card option-card--check"
+                      [attr.aria-pressed]="selectedModuleSet().has(module.key)"
+                      (click)="toggleModule(module.key)"
+                    >
+                      <span class="option-card__icon"><app-icon [name]="module.icon" /></span>
+                      <span>
+                        <span class="option-card__title">{{ module.label }}</span>
+                        <span class="option-card__desc">{{ module.description }}</span>
+                      </span>
+                      <span class="option-card__check" aria-hidden="true"><app-icon name="check" [strokeWidth]="2.5" /></span>
+                    </button>
+                  }
+                </div>
+                @if (error('selected_modules'); as msg) {
+                  <p class="field__error">{{ msg }}</p>
+                }
+              </fieldset>
+
+              <div class="field">
+                <span class="field__label" id="floorplan-label">Pôdorys alebo projekt <span class="optional">(nepovinné)</span></span>
+                @if (file(); as f) {
+                  <div class="file">
+                    <span class="file__icon"><app-icon name="file" /></span>
+                    <span class="file__meta">
+                      <strong>{{ f.name }}</strong>
+                      <span class="num">{{ fileSize(f.size) }}</span>
+                    </span>
+                    <button type="button" class="file__remove" (click)="removeFile()" aria-label="Odstrániť súbor">
+                      <app-icon name="close" />
+                    </button>
+                  </div>
+                } @else {
+                  <label
+                    class="dropzone"
+                    [class.is-over]="dragOver()"
+                    (dragover)="onDragOver($event)"
+                    (dragleave)="dragOver.set(false)"
+                    (drop)="onDrop($event)"
+                  >
+                    <input type="file" class="visually-hidden" accept=".pdf,.dwg,.dxf,.png,.jpg,.jpeg,.webp" (change)="onFileSelected($event)" aria-labelledby="floorplan-label" />
+                    <app-icon name="upload" />
+                    <span><strong>Nahrajte pôdorys</strong> alebo ho sem pretiahnite</span>
+                    <span class="dropzone__hint">PDF, DWG, DXF, PNG, JPG · max. 15 MB</span>
+                  </label>
+                }
+                @if (fileError()) {
+                  <span class="field__error">{{ fileError() }}</span>
+                }
+              </div>
+
+              <label class="field">
+                <span class="field__label">Poznámka <span class="optional">(nepovinné)</span></span>
+                <textarea class="textarea" formControlName="notes" rows="4" placeholder="Termín stavby, architekt, špeciálne požiadavky, preferovaný termín návštevy…"></textarea>
+                @if (error('notes'); as msg) {
+                  <span class="field__error">{{ msg }}</span>
+                }
+              </label>
+            </div>
+          }
+
+          <!-- STEP 3 -->
+          @if (currentStep() === 2) {
+            <div class="wizard__step fade-in">
+              <div class="form-grid">
+                <label class="field field--full">
+                  <span class="field__label">Meno a priezvisko</span>
+                  <input class="input" formControlName="client_name" autocomplete="name" [class.is-invalid]="error('client_name')" />
+                  @if (error('client_name'); as msg) {
+                    <span class="field__error">{{ msg }}</span>
+                  }
+                </label>
+                <label class="field">
+                  <span class="field__label">E-mail</span>
+                  <input class="input" type="email" formControlName="email" autocomplete="email" [class.is-invalid]="error('email')" />
+                  @if (error('email'); as msg) {
+                    <span class="field__error">{{ msg }}</span>
+                  }
+                </label>
+                <label class="field">
+                  <span class="field__label">Telefón</span>
+                  <input class="input" type="tel" formControlName="phone" autocomplete="tel" placeholder="+421 …" [class.is-invalid]="error('phone')" />
+                  @if (error('phone'); as msg) {
+                    <span class="field__error">{{ msg }}</span>
+                  }
+                </label>
+              </div>
+
+              <div class="summary">
+                <h3 class="h4">Zhrnutie dopytu</h3>
+                <dl class="spec-list">
+                  <div><dt>Cieľ</dt><dd>{{ summary().goal }}</dd></div>
+                  <div><dt>Nehnuteľnosť</dt><dd>{{ summary().type }}</dd></div>
+                  <div><dt>Fáza stavby</dt><dd>{{ summary().stage }}</dd></div>
+                  <div><dt>Plocha</dt><dd>{{ summary().area }}</dd></div>
+                  <div><dt>Lokalita</dt><dd>{{ summary().city }}</dd></div>
+                  <div><dt>Moduly</dt><dd>{{ summary().modules }}</dd></div>
+                  @if (file(); as f) {
+                    <div><dt>Pôdorys</dt><dd>{{ f.name }}</dd></div>
+                  }
+                </dl>
+              </div>
+
+              <label class="checkbox">
+                <input type="checkbox" formControlName="gdpr_consent" />
+                <span>
+                  Súhlasím so spracovaním osobných údajov na účel vybavenia dopytu.
+                  <a routerLink="/ochrana-osobnych-udajov" class="text-link">Ochrana osobných údajov</a>
+                </span>
+              </label>
+              @if (error('gdpr_consent'); as msg) {
+                <p class="field__error">{{ msg }}</p>
+              }
+            </div>
+          }
+
+          @if (generalError()) {
+            <p class="alert alert--error" role="alert"><app-icon name="alert" /> {{ generalError() }}</p>
+          }
+
+          <div class="wizard__nav">
+            @if (currentStep() > 0) {
+              <button type="button" class="btn btn--ghost" (click)="back()">
+                <app-icon name="arrow-left" /> Späť
+              </button>
+            } @else {
+              <span></span>
+            }
+            @if (currentStep() < 2) {
+              <button type="button" class="btn btn--dark" (click)="next()">
+                Pokračovať <app-icon name="arrow-right" />
+              </button>
+            } @else {
+              <button type="submit" class="btn btn--primary btn--lg" [disabled]="submitting()">
+                @if (submitting()) {
+                  Odosielam…
+                } @else {
+                  Odoslať dopyt <app-icon name="arrow-right" />
+                }
+              </button>
+            }
+          </div>
+        </form>
+      }
+    </div>
+
+    <!-- SIDEBAR -->
+    <aside class="aside">
+      <div class="aside__card aside__card--dark">
+        <p class="eyebrow">Showroom</p>
+        <h2 class="h3">{{ config.showroom.name }}</h2>
+        <p class="aside__row">
+          <app-icon name="map-pin" />
+          <a [href]="config.showroom.mapUrl" target="_blank" rel="noopener">
+            {{ config.showroom.street }}<br />{{ config.showroom.postalCode }} {{ config.showroom.city }}
+          </a>
+        </p>
+        <dl class="aside__hours">
+          @for (item of config.showroom.openingHours; track item.days) {
+            <div>
+              <dt>{{ item.days }}</dt>
+              <dd class="num">{{ item.hours }}</dd>
+            </div>
+          }
+        </dl>
+        <p class="aside__note">{{ config.showroom.demoHouseNote }}</p>
+      </div>
+      <div class="aside__card">
+        <h2 class="h4">Radšej telefonicky?</h2>
+        <a [href]="config.contact.phoneHref" class="aside__phone num"><app-icon name="phone" /> {{ config.contact.phone }}</a>
+        <a [href]="'mailto:' + config.contact.consultationEmail" class="aside__mail"><app-icon name="mail" /> {{ config.contact.consultationEmail }}</a>
+        <p class="aside__small"><app-icon name="clock" /> {{ config.contact.responseTime }}</p>
+      </div>
+      <ul class="aside__badges" role="list">
+        @for (badge of config.partnerBadges; track badge.label) {
+          <li class="tag tag--energy"><app-icon name="badge" /> {{ badge.label }}</li>
+        }
+      </ul>
+    </aside>
+  </div>
+</section>

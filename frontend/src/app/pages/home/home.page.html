@@ -1,0 +1,234 @@
+<!-- HERO -->
+<section class="hero">
+  <div class="hero__media" aria-hidden="true">
+    <img [src]="heroImage" alt="" fetchpriority="high" />
+  </div>
+  <div class="container hero__inner">
+    <div class="hero__content fade-in">
+      <p class="eyebrow">{{ config.partnerBadges[0].label }} · {{ config.partnerBadges[1].label }}</p>
+      <h1 class="hero__title">Dom, ktorý sa <em>prispôsobí</em> vášmu dňu.</h1>
+      <p class="hero__lead">
+        Inteligentné elektroinštalácie Loxone a KNX pre domy, byty a kancelárie. Svetlo v správnej teplote,
+        tienenie podľa slnka, teplo v každej miestnosti a energia z vlastnej strechy – bez zložitého ovládania.
+      </p>
+      <div class="hero__actions">
+        <a routerLink="/kalkulacka" class="btn btn--primary btn--lg">
+          Vypočítať cenu Smart Home
+          <app-icon name="arrow-right" />
+        </a>
+        <a routerLink="/konzultacia" [queryParams]="{ goal: 'navsteva_showroomu' }" class="btn btn--ghost-light btn--lg">
+          <app-icon name="calendar" /> Rezervovať návštevu showroomu
+        </a>
+      </div>
+    </div>
+
+    <ul class="hero__trust" role="list">
+      @for (item of trustHighlights; track item.title) {
+        <li>
+          <span class="hero__trust-icon"><app-icon [name]="item.icon" /></span>
+          <span>
+            <strong>{{ item.title }}</strong>
+            <span>{{ item.text }}</span>
+          </span>
+        </li>
+      }
+    </ul>
+  </div>
+</section>
+
+<!-- METRICS -->
+<section class="metrics" aria-label="Naše výsledky v číslach">
+  <div class="container">
+    <dl class="metrics__list">
+      @for (metric of config.trustMetrics; track metric.label) {
+        <div>
+          <dt>{{ metric.label }}</dt>
+          <dd class="num">{{ metric.value }}</dd>
+        </div>
+      }
+    </dl>
+  </div>
+</section>
+
+<!-- DOMAINS -->
+<section class="section" id="oblasti">
+  <div class="container">
+    <div class="section-head section-head--split">
+      <div class="stack">
+        <p class="eyebrow">Oblasti automatizácie</p>
+        <h2>Čo všetko dokáže váš dom <em>robiť sám</em></h2>
+      </div>
+      <p class="lead">
+        Každá oblasť funguje samostatne, ale skutočné pohodlie vzniká až ich prepojením. Jedno tlačidlo „Odchod“
+        zhasne svetlá, stiahne žalúzie, zníži teplotu a zapne alarm.
+      </p>
+    </div>
+
+    @switch (domainsState().status) {
+      @case ('loading') {
+        <div class="domains">
+          <div class="skeleton" style="height: 420px"></div>
+          <div class="skeleton" style="height: 420px"></div>
+        </div>
+      }
+      @case ('error') {
+        <p class="alert alert--info"><app-icon name="info" /> Oblasti sa momentálne nepodarilo načítať.</p>
+      }
+      @default {
+        <div class="domains">
+          <div class="domains__list" role="tablist" aria-label="Oblasti automatizácie">
+            @for (domain of domains(); track domain.slug) {
+              <button
+                type="button"
+                role="tab"
+                class="domain-tab"
+                [id]="'domain-tab-' + domain.slug"
+                [attr.aria-selected]="activeDomain()?.slug === domain.slug"
+                aria-controls="domain-panel"
+                (click)="selectDomain(domain.slug)"
+                (mouseenter)="selectDomain(domain.slug)"
+              >
+                <span class="domain-tab__icon"><app-icon [name]="domain.icon_name" /></span>
+                <span class="domain-tab__name">{{ domain.name }}</span>
+                <span class="domain-tab__count num">{{ domain.solution_count }}</span>
+              </button>
+            }
+          </div>
+
+          @if (activeDomain(); as domain) {
+            <div
+              class="domain-panel"
+              id="domain-panel"
+              role="tabpanel"
+              [attr.aria-labelledby]="'domain-tab-' + domain.slug"
+            >
+              <div class="domain-panel__media">
+                @if (activeImage()) {
+                  <img [src]="activeImage() | img: 1200" [alt]="domain.name" />
+                }
+              </div>
+              <div class="domain-panel__body">
+                <h3>{{ domain.name }}</h3>
+                <p class="muted">{{ domain.short_summary }}</p>
+                @if (activeSolutions().length) {
+                  <ul class="domain-panel__solutions" role="list">
+                    @for (solution of activeSolutions(); track solution.slug) {
+                      <li>
+                        <a [routerLink]="['/riesenia', solution.slug]">
+                          <span>{{ solution.name }}</span>
+                          @if (solution.starting_price_eur) {
+                            <span class="num muted small">od {{ solution.starting_price_eur | eur }}</span>
+                          }
+                          <app-icon name="arrow-right" />
+                        </a>
+                      </li>
+                    }
+                  </ul>
+                }
+                <a routerLink="/riesenia" [queryParams]="{ domain: domain.slug }" class="link-arrow">
+                  Všetky riešenia v oblasti <app-icon name="arrow-right" />
+                </a>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    }
+  </div>
+</section>
+
+<!-- ESTIMATOR -->
+<section class="section section--surface" id="kalkulacka">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Kalkulačka ceny</p>
+      <h2>Koľko bude stáť váš <em>inteligentný dom</em>?</h2>
+      <p class="lead">
+        Za 30 sekúnd získate orientačný rozpočet, odhad úspor energií a odporúčanie, či sa vám viac oplatí
+        káblový alebo bezdrôtový systém.
+      </p>
+    </div>
+    <app-budget-estimator />
+  </div>
+</section>
+
+<!-- REFERENCES -->
+<section class="section">
+  <div class="container">
+    <div class="section-head section-head--split">
+      <div class="stack">
+        <p class="eyebrow">Vybrané realizácie</p>
+        <h2>Domy, ktoré už <em>myslia samé</em></h2>
+      </div>
+      <div class="stack">
+        <p class="lead">
+          Vily, penthousy aj kancelárske budovy – každý projekt navrhujeme na mieru architektúre a životnému štýlu
+          klienta. A pri každom meriame reálne úspory.
+        </p>
+        <a routerLink="/realizacie" class="link-arrow">Všetky realizácie <app-icon name="arrow-right" /></a>
+      </div>
+    </div>
+
+    @switch (referencesState().status) {
+      @case ('loading') {
+        <div class="refs">
+          @for (i of [1, 2, 3]; track i) {
+            <div class="skeleton" style="min-height: 380px"></div>
+          }
+        </div>
+      }
+      @case ('error') {
+        <p class="alert alert--info"><app-icon name="info" /> Realizácie sa momentálne nepodarilo načítať.</p>
+      }
+      @default {
+        <div class="refs">
+          @for (reference of featuredReferences(); track reference.slug; let first = $first) {
+            <app-reference-card [reference]="reference" [large]="first" [class.refs__first]="first" />
+          }
+        </div>
+      }
+    }
+  </div>
+</section>
+
+<!-- WHY US -->
+<section class="section section--dark why">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Prečo si vybrať naše štúdio</p>
+      <h2>Technológia, ktorú <em>necítiť</em>. Spoľahlivosť, na ktorú sa dá spoľahnúť.</h2>
+    </div>
+    <div class="why__grid">
+      @for (pillar of pillars; track pillar.title; let i = $index) {
+        <article class="why__item">
+          <span class="why__index num">0{{ i + 1 }}</span>
+          <span class="why__icon"><app-icon [name]="pillar.icon" /></span>
+          <h3>{{ pillar.title }}</h3>
+          <p>{{ pillar.text }}</p>
+        </article>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="section section--surface">
+  <div class="container">
+    <div class="section-head section-head--center">
+      <p class="eyebrow">Skúsenosti klientov</p>
+      <h2>Čo hovoria <em>majitelia</em> našich domov</h2>
+    </div>
+    <div class="grid grid--3">
+      @for (item of config.testimonials; track item.author) {
+        <figure class="testimonial">
+          <app-icon name="quote" />
+          <blockquote>{{ item.quote }}</blockquote>
+          <figcaption>
+            <strong>{{ item.author }}</strong>
+            <span>{{ item.project }} · {{ item.location }}</span>
+          </figcaption>
+        </figure>
+      }
+    </div>
+  </div>
+</section>

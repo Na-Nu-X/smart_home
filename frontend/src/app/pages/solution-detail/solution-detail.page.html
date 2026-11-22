@@ -1,0 +1,157 @@
+@switch (state().status) {
+  @case ('loading') {
+    <div class="container detail-loading">
+      <div class="skeleton" style="height: 28px; width: 40%"></div>
+      <div class="skeleton" style="height: 64px; width: 80%"></div>
+      <div class="skeleton" style="height: 420px"></div>
+    </div>
+  }
+  @case ('error') {
+    <div class="container--narrow section not-found">
+      <p class="eyebrow">Riešenie sa nenašlo</p>
+      <h1 class="h2">Toto riešenie neexistuje alebo bolo presunuté.</h1>
+      <a routerLink="/riesenia" class="btn btn--primary">Späť na prehľad riešení</a>
+    </div>
+  }
+  @default {
+    @if (solution(); as s) {
+      <!-- HERO -->
+      <section class="hero">
+        <div class="container hero__grid">
+          <div class="hero__content fade-in">
+            <nav class="breadcrumb" aria-label="Omrvinková navigácia">
+              <a routerLink="/riesenia">Riešenia</a>
+              <app-icon name="chevron-right" />
+              <a routerLink="/riesenia" [queryParams]="{ domain: s.domain.slug }">{{ s.domain.name }}</a>
+            </nav>
+            <h1>{{ s.name }}</h1>
+            <p class="lead">{{ s.short_description }}</p>
+
+            <div class="hero__facts">
+              @if (s.energy_saving_note) {
+                <p class="tag tag--energy hero__energy"><app-icon name="leaf" /> {{ s.energy_saving_note }}</p>
+              }
+              <ul class="cluster" role="list" aria-label="Podporované protokoly">
+                @for (protocol of s.supported_protocols; track protocol) {
+                  <li class="tag tag--protocol">{{ protocol }}</li>
+                }
+              </ul>
+            </div>
+
+            <div class="hero__cta">
+              <a routerLink="/konzultacia" [queryParams]="quoteParams()" class="btn btn--primary btn--lg">
+                Zahrnúť toto riešenie do ponuky
+                <app-icon name="arrow-right" />
+              </a>
+              @if (s.starting_price_eur) {
+                <p class="hero__price">
+                  Orientačne od <strong class="num">{{ s.starting_price_eur | eur }}</strong>
+                  <span>bez DPH, podľa rozsahu</span>
+                </p>
+              }
+            </div>
+          </div>
+          <figure class="hero__media fade-in">
+            <img [src]="s.cover_image_url | img: 1400" [alt]="s.name" />
+          </figure>
+        </div>
+      </section>
+
+      <!-- EVERYDAY -->
+      <section class="section">
+        <div class="container">
+          <div class="section-head">
+            <p class="eyebrow">Ako to funguje v bežnom dni</p>
+            <h2>Malé momenty, ktoré <em>robia rozdiel</em></h2>
+          </div>
+          <ol class="scenarios" role="list">
+            @for (benefit of s.everyday_benefits; track benefit; let i = $index) {
+              <li class="scenario">
+                <span class="scenario__num num">{{ (i + 1).toString().padStart(2, '0') }}</span>
+                <p>{{ benefit }}</p>
+              </li>
+            }
+          </ol>
+        </div>
+      </section>
+
+      <!-- DESCRIPTION + ENERGY -->
+      <section class="section section--surface">
+        <div class="container split">
+          <div class="prose">
+            <p class="eyebrow">Ako to navrhujeme</p>
+            @for (paragraph of paragraphs(); track $index) {
+              <p>{{ paragraph }}</p>
+            }
+          </div>
+          <aside class="benefit-panel">
+            <p class="eyebrow">Energetický a bezpečnostný prínos</p>
+            @if (s.energy_saving_note) {
+              <p class="benefit-panel__highlight">{{ s.energy_saving_note }}</p>
+            }
+            <ul class="check-list">
+              <li><app-icon name="check" /> Logika beží lokálne – funguje aj bez internetu</li>
+              <li><app-icon name="check" /> Prepojenie s alarmom a scénou „Odchod“</li>
+              <li><app-icon name="check" /> Prehľad spotreby a stavov v aplikácii</li>
+              <li><app-icon name="check" /> Vzdialená diagnostika a aktualizácie</li>
+            </ul>
+          </aside>
+        </div>
+      </section>
+
+      <!-- PROTOCOLS -->
+      <section class="section">
+        <div class="container">
+          <div class="section-head">
+            <p class="eyebrow">Podporované technológie a senzory</p>
+            <h2>Otvorené štandardy, <em>žiadne uzamknutie</em></h2>
+            <p class="lead">
+              Stavíme na overených protokoloch, ktoré podporujú desiatky výrobcov. Systém tak môžete kedykoľvek
+              rozšíriť a nie ste závislí od jedného dodávateľa.
+            </p>
+          </div>
+          <div class="protocols">
+            @for (protocol of protocols(); track protocol.name) {
+              <article class="protocol">
+                <span class="tag tag--protocol">{{ protocol.name }}</span>
+                <p>{{ protocol.note }}</p>
+              </article>
+            }
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA -->
+      <section class="section--tight">
+        <div class="container">
+          <div class="cta-band">
+            <div>
+              <h2 class="h3">Chcete toto riešenie aj vo vašom dome?</h2>
+              <p>Pripravíme návrh a cenovú ponuku na mieru – nezáväzne a zadarmo.</p>
+            </div>
+            <a routerLink="/konzultacia" [queryParams]="quoteParams()" class="btn btn--primary btn--lg">
+              Zahrnúť do ponuky <app-icon name="arrow-right" />
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- RELATED -->
+      @if (s.related_solutions.length) {
+        <section class="section">
+          <div class="container">
+            <div class="section-head section-head--split">
+              <h2 class="h2">Súvisiace riešenia</h2>
+              <a routerLink="/riesenia" class="link-arrow">Všetky riešenia <app-icon name="arrow-right" /></a>
+            </div>
+            <div class="grid grid--3">
+              @for (related of s.related_solutions; track related.slug) {
+                <app-solution-card [solution]="related" />
+              }
+            </div>
+          </div>
+        </section>
+      }
+    }
+  }
+}

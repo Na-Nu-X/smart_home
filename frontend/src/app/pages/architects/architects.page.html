@@ -1,0 +1,203 @@
+<!-- HERO -->
+<section class="hero">
+  <img class="hero__img" [src]="heroImage" alt="" aria-hidden="true" />
+  <div class="container hero__inner">
+    <p class="eyebrow">Pre architektov a developerov</p>
+    <h1>Technológia, ktorá rešpektuje <em>vašu architektúru</em>.</h1>
+    <p class="hero__lead">
+      Sme technickým partnerom architektov, interiérových dizajnérov, projektantov a developerov. Pomôžeme
+      navrhnúť inteligentnú elektroinštaláciu tak, aby bola neviditeľná – a aby fungovala bezchybne.
+    </p>
+    <div class="cluster">
+      <a [routerLink]="[]" fragment="spolupraca" class="btn btn--primary btn--lg">
+        Začať spoluprácu <app-icon name="arrow-right" />
+      </a>
+      <a [href]="'mailto:' + config.contact.partnersEmail" class="btn btn--ghost-light btn--lg">
+        <app-icon name="mail" /> {{ config.contact.partnersEmail }}
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="section">
+  <div class="container">
+    <div class="section-head section-head--split">
+      <div class="stack">
+        <p class="eyebrow">Čo vám prinášame</p>
+        <h2>Čisté steny. Presné svetlo. <em>Žiadne kompromisy.</em></h2>
+      </div>
+      <p class="lead">
+        Typický smart dom má na stene namiesto šiestich vypínačov jedno elegantné tlačidlo. Termostaty, displeje
+        alarmu a ovládače žalúzií miznú – ostáva čistá architektúra.
+      </p>
+    </div>
+    <div class="services">
+      @for (service of services; track service.title) {
+        <article class="service">
+          <span class="service__icon"><app-icon [name]="service.icon" /></span>
+          <h3>{{ service.title }}</h3>
+          <p>{{ service.text }}</p>
+        </article>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- WALL ACNE COMPARISON -->
+<section class="section section--surface">
+  <div class="container compare">
+    <div class="stack">
+      <p class="eyebrow">Wall acne vs. čistý dizajn</p>
+      <h2 class="h2">Jedna stena, dva prístupy</h2>
+      <p class="muted">
+        Klasická elektroinštalácia potrebuje na každú funkciu samostatný prvok. Inteligentná elektroinštalácia
+        zlúči svetlo, žalúzie, teplotu aj scény do jedného dizajnového tlačidla so senzormi.
+      </p>
+    </div>
+    <div class="compare__grid">
+      <figure class="wall wall--before">
+        <div class="wall__surface" aria-hidden="true">
+          @for (i of [1, 2, 3, 4, 5, 6]; track i) {
+            <span class="wall__switch"></span>
+          }
+          <span class="wall__thermo"></span>
+          <span class="wall__panel"></span>
+        </div>
+        <figcaption><strong>Klasicky</strong> 6 vypínačov, termostat a panel alarmu</figcaption>
+      </figure>
+      <figure class="wall wall--after">
+        <div class="wall__surface" aria-hidden="true">
+          <span class="wall__touch"><i></i><i></i><i></i><i></i></span>
+        </div>
+        <figcaption><strong>Smart</strong> 1 multifunkčné tlačidlo so senzorom teploty a vlhkosti</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- FORM -->
+<section class="section" id="spolupraca">
+  <div class="container partner">
+    <div class="partner__intro">
+      <p class="eyebrow">B2B spolupráca</p>
+      <h2>Poďme spolu navrhnúť <em>váš ďalší projekt</em></h2>
+      <p class="muted">
+        Vyplňte krátky formulár. Ozve sa vám náš B2B konzultant a dohodne úvodné stretnutie v showroome alebo
+        priamo vo vašom štúdiu.
+      </p>
+      <ul class="check-list">
+        @for (benefit of benefits; track benefit) {
+          <li><app-icon name="check" /> {{ benefit }}</li>
+        }
+      </ul>
+      <div class="partner__badges">
+        @for (badge of config.partnerBadges; track badge.label) {
+          <span class="tag tag--energy"><app-icon name="badge" /> {{ badge.label }}</span>
+        }
+      </div>
+    </div>
+
+    <div class="form-card">
+      @if (submitted()) {
+        <div class="success" role="status">
+          <span class="success__icon"><app-icon name="check" [strokeWidth]="2" /></span>
+          <h3 class="h3">Ďakujeme za vašu správu</h3>
+          <p class="muted">{{ successMessage() }}</p>
+          <button type="button" class="btn btn--ghost" (click)="resetForm()">Odoslať ďalší dopyt</button>
+        </div>
+      } @else {
+        <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+          <fieldset class="field">
+            <legend class="field__label">Vaša profesia</legend>
+            <div class="roles" role="radiogroup" aria-label="Vaša profesia">
+              @for (role of roles; track role.value) {
+                <button
+                  type="button"
+                  role="radio"
+                  class="option-card"
+                  [attr.aria-checked]="form.controls.partner_role.value === role.value"
+                  (click)="selectRole(role.value)"
+                >
+                  <span class="option-card__icon"><app-icon [name]="role.icon" /></span>
+                  <span class="option-card__title">{{ role.label }}</span>
+                </button>
+              }
+            </div>
+            @if (error('partner_role'); as msg) {
+              <p class="field__error"><app-icon name="alert" /> {{ msg === 'Toto pole je povinné.' ? 'Vyberte svoju profesijnú rolu.' : msg }}</p>
+            }
+          </fieldset>
+
+          <div class="form-grid">
+            <label class="field">
+              <span class="field__label">Štúdio / spoločnosť</span>
+              <input class="input" formControlName="studio_or_company_name" autocomplete="organization" [class.is-invalid]="error('studio_or_company_name')" />
+              @if (error('studio_or_company_name'); as msg) {
+                <span class="field__error">{{ msg }}</span>
+              }
+            </label>
+            <label class="field">
+              <span class="field__label">Kontaktná osoba</span>
+              <input class="input" formControlName="contact_name" autocomplete="name" [class.is-invalid]="error('contact_name')" />
+              @if (error('contact_name'); as msg) {
+                <span class="field__error">{{ msg }}</span>
+              }
+            </label>
+            <label class="field">
+              <span class="field__label">E-mail</span>
+              <input class="input" type="email" formControlName="email" autocomplete="email" [class.is-invalid]="error('email')" />
+              @if (error('email'); as msg) {
+                <span class="field__error">{{ msg }}</span>
+              }
+            </label>
+            <label class="field">
+              <span class="field__label">Telefón <span class="optional">(nepovinné)</span></span>
+              <input class="input" type="tel" formControlName="phone" autocomplete="tel" placeholder="+421 …" [class.is-invalid]="error('phone')" />
+              @if (error('phone'); as msg) {
+                <span class="field__error">{{ msg }}</span>
+              }
+            </label>
+          </div>
+
+          <label class="field">
+            <span class="field__label">Správa o projekte</span>
+            <textarea
+              class="textarea"
+              formControlName="message"
+              rows="5"
+              placeholder="Typ projektu, lokalita, fáza a termín, s čím potrebujete pomôcť…"
+              [class.is-invalid]="error('message')"
+            ></textarea>
+            @if (error('message'); as msg) {
+              <span class="field__error">{{ msg }}</span>
+            }
+          </label>
+
+          <label class="checkbox">
+            <input type="checkbox" formControlName="gdpr_consent" />
+            <span>
+              Súhlasím so spracovaním osobných údajov na účel vybavenia dopytu.
+              <a routerLink="/ochrana-osobnych-udajov" class="text-link">Viac informácií</a>
+            </span>
+          </label>
+          @if (error('gdpr_consent'); as msg) {
+            <p class="field__error">{{ msg }}</p>
+          }
+
+          @if (generalError()) {
+            <p class="alert alert--error" role="alert"><app-icon name="alert" /> {{ generalError() }}</p>
+          }
+
+          <button type="submit" class="btn btn--primary btn--lg btn--block" [disabled]="submitting()">
+            @if (submitting()) {
+              Odosielam…
+            } @else {
+              Odoslať dopyt na spoluprácu <app-icon name="arrow-right" />
+            }
+          </button>
+        </form>
+      }
+    </div>
+  </div>
+</section>

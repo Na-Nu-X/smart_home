@@ -1,0 +1,117 @@
+<header class="page-hero">
+  <div class="container">
+    <p class="eyebrow">Riešenia a technológie</p>
+    <h1>Komfort, ktorý <em>funguje sám</em> – každý deň.</h1>
+    <p class="lead">
+      Prehľad funkcií, ktoré pre vás navrhneme a naprogramujeme. Pri každom riešení nájdete, ako vám uľahčí
+      bežný deň, koľko energie ušetrí a na akých otvorených štandardoch je postavené.
+    </p>
+  </div>
+</header>
+
+<section class="section section--tight">
+  <div class="container">
+    <div class="toolbar">
+      <div class="chips" role="group" aria-label="Filtrovať podľa oblasti">
+        <button type="button" class="chip" [attr.aria-pressed]="!domain()" (click)="setDomain(null)">
+          Všetky <span class="chip__count">{{ totalCount() }}</span>
+        </button>
+        @for (d of domains(); track d.slug) {
+          <button type="button" class="chip" [attr.aria-pressed]="domain() === d.slug" (click)="setDomain(d.slug)">
+            <app-icon [name]="d.icon_name" />
+            {{ d.name }}
+            <span class="chip__count">{{ d.solution_count }}</span>
+          </button>
+        }
+      </div>
+
+      <div class="toolbar__row">
+        <label class="search">
+          <span class="visually-hidden">Hľadať riešenie alebo protokol</span>
+          <app-icon name="search" />
+          <input
+            type="search"
+            class="input"
+            placeholder="Hľadať riešenie alebo protokol (napr. DALI, KNX)…"
+            [value]="searchTerm()"
+            (input)="onSearch($event)"
+          />
+        </label>
+        <label class="checkbox toolbar__featured">
+          <input type="checkbox" [checked]="featuredOnly()" (change)="featuredOnly.set(!featuredOnly())" />
+          Len odporúčané
+        </label>
+        <label class="toolbar__sort">
+          <span class="visually-hidden">Zoradiť</span>
+          <select class="select" [value]="ordering()" (change)="onOrdering($event)">
+            @for (option of sortOptions; track option.value) {
+              <option [value]="option.value">{{ option.label }}</option>
+            }
+          </select>
+        </label>
+      </div>
+    </div>
+
+    @if (activeDomain(); as d) {
+      <div class="domain-intro fade-in">
+        <span class="domain-intro__icon"><app-icon [name]="d.icon_name" /></span>
+        <div>
+          <h2 class="h3">{{ d.name }}</h2>
+          <p class="muted">{{ d.short_summary }}</p>
+        </div>
+      </div>
+    }
+
+    @switch (state().status) {
+      @case ('loading') {
+        <div class="grid grid--3">
+          @for (i of [1, 2, 3, 4, 5, 6]; track i) {
+            <div class="skeleton" style="min-height: 460px"></div>
+          }
+        </div>
+      }
+      @case ('error') {
+        <div class="alert alert--error">
+          <app-icon name="alert" />
+          Riešenia sa nepodarilo načítať. Skontrolujte pripojenie alebo to skúste neskôr.
+        </div>
+      }
+      @default {
+        @let s = state();
+        @if (s.status === 'success') {
+          <p class="results-count" aria-live="polite">
+            <span class="num">{{ s.data.length }}</span>
+            {{ s.data.length === 1 ? 'riešenie' : s.data.length >= 2 && s.data.length <= 4 ? 'riešenia' : 'riešení' }}
+          </p>
+          @if (s.data.length) {
+            <div class="grid grid--3">
+              @for (solution of s.data; track solution.slug) {
+                <app-solution-card [solution]="solution" class="fade-in" />
+              }
+            </div>
+          } @else {
+            <div class="empty">
+              <app-icon name="search" />
+              <h2 class="h3">Nenašli sme žiadne riešenie</h2>
+              <p class="muted">Skúste upraviť vyhľadávanie alebo zrušiť filtre.</p>
+              <button type="button" class="btn btn--ghost" (click)="resetFilters()">Zrušiť filtre</button>
+            </div>
+          }
+        }
+      }
+    }
+  </div>
+</section>
+
+<section class="section section--surface section--tight">
+  <div class="container cta-row">
+    <div>
+      <h2 class="h3">Neviete, ktoré riešenia potrebujete?</h2>
+      <p class="muted">Vyskúšajte kalkulačku alebo si dohodnite konzultáciu v showroome – poradíme bezplatne.</p>
+    </div>
+    <div class="cluster">
+      <a routerLink="/kalkulacka" class="btn btn--ghost">Kalkulačka ceny</a>
+      <a routerLink="/konzultacia" class="btn btn--primary">Nezáväzná ponuka <app-icon name="arrow-right" /></a>
+    </div>
+  </div>
+</section>

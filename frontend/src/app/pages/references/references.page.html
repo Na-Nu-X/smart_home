@@ -1,0 +1,87 @@
+<header class="page-hero">
+  <div class="container">
+    <p class="eyebrow">Realizácie a referencie</p>
+    <h1>Projekty, za ktorými si <em>stojíme</em>.</h1>
+    <p class="lead">
+      Od nízkoenergetických víl cez mestské penthousy až po kancelárske budovy. Pri každej realizácii uvádzame
+      použitú platformu, rozsah automatizácie a reálne namerané úspory.
+    </p>
+  </div>
+</header>
+
+<section class="section section--tight">
+  <div class="container">
+    <div class="toolbar">
+      <div class="chips" role="group" aria-label="Filtrovať podľa typu nehnuteľnosti">
+        @for (filter of filters; track filter.label) {
+          <button
+            type="button"
+            class="chip"
+            [attr.aria-pressed]="activeType() === filter.value"
+            (click)="setType(filter.value)"
+          >
+            <app-icon [name]="filter.icon" /> {{ filter.label }}
+          </button>
+        }
+      </div>
+      <label class="search">
+        <span class="visually-hidden">Hľadať v realizáciách</span>
+        <app-icon name="search" />
+        <input
+          type="search"
+          class="input"
+          placeholder="Mesto, platforma (Loxone, KNX)…"
+          [value]="searchTerm()"
+          (input)="onSearch($event)"
+        />
+      </label>
+    </div>
+
+    @switch (state().status) {
+      @case ('loading') {
+        <div class="grid grid--3">
+          @for (i of [1, 2, 3]; track i) {
+            <div class="skeleton" style="min-height: 420px"></div>
+          }
+        </div>
+      }
+      @case ('error') {
+        <div class="alert alert--error">
+          <app-icon name="alert" /> Realizácie sa nepodarilo načítať. Skúste to prosím neskôr.
+        </div>
+      }
+      @default {
+        @let s = state();
+        @if (s.status === 'success') {
+          @if (s.data.length) {
+            <div class="grid grid--3">
+              @for (reference of s.data; track reference.slug) {
+                <app-reference-card [reference]="reference" class="fade-in" />
+              }
+            </div>
+          } @else {
+            <div class="empty">
+              <h2 class="h3">V tejto kategórii zatiaľ nemáme zverejnenú realizáciu</h2>
+              <p class="muted">Ďalšie projekty vám radi ukážeme osobne v showroome.</p>
+              <button type="button" class="btn btn--ghost" (click)="setType(null); searchTerm.set('')">
+                Zobraziť všetky
+              </button>
+            </div>
+          }
+        }
+      }
+    }
+  </div>
+</section>
+
+<section class="section section--surface section--tight">
+  <div class="container cta-row">
+    <div>
+      <h2 class="h3">Chcete vidieť realizáciu naživo?</h2>
+      <p class="muted">Po dohode vás privedieme do obývaného ukážkového domu – v pokoji a bez náhlenia.</p>
+    </div>
+    <a routerLink="/konzultacia" [queryParams]="{ goal: 'navsteva_showroomu' }" class="btn btn--primary">
+      Dohodnúť prehliadku <app-icon name="arrow-right" />
+    </a>
+  </div>
+</section>

@@ -1,0 +1,500 @@
+@use 'mixins' as m;
+
+.page-hero--compact {
+  padding-bottom: 2.5rem;
+}
+
+.layout {
+  display: grid;
+  gap: 2rem;
+
+  @include m.mq(lg) {
+    grid-template-columns: minmax(0, 1fr) 340px;
+    gap: 2.5rem;
+    align-items: start;
+  }
+}
+
+.wizard {
+  @include m.card;
+  padding: clamp(1.25rem, 1rem + 2vw, 2.5rem);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
+  scroll-margin-top: calc(var(--header-height) + 1rem);
+
+  &__form {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  &__step {
+    display: grid;
+    gap: 1.75rem;
+  }
+
+  &__nav {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-border);
+  }
+}
+
+.stepper {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  margin: 0 0 2rem;
+  padding: 0;
+
+  &__item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.6rem;
+    width: 100%;
+    padding-top: 0.9rem;
+    border-top: 3px solid var(--color-border);
+    text-align: left;
+    color: var(--color-ink-3);
+    transition: border-color var(--duration-base), color var(--duration-base);
+
+    @include m.mq(md) {
+      flex-direction: row;
+      align-items: center;
+    }
+
+    &.is-active {
+      border-top-color: var(--color-accent);
+      color: var(--color-ink);
+    }
+
+    &.is-done {
+      border-top-color: var(--color-ink);
+      color: var(--color-ink);
+    }
+  }
+
+  &__num {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 1px solid currentColor;
+    font-size: 0.82rem;
+    font-weight: 600;
+
+    ::ng-deep svg {
+      width: 14px;
+      height: 14px;
+    }
+  }
+
+  &__item.is-active &__num {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+    color: var(--color-on-accent);
+  }
+
+  &__item.is-done &__num {
+    background: var(--color-ink);
+    border-color: var(--color-ink);
+    color: var(--color-on-dark);
+  }
+
+  &__label {
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+}
+
+.budget-note {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius-sm);
+  background: var(--color-accent-soft);
+  font-size: 0.9rem;
+  color: var(--color-accent-ink);
+
+  ::ng-deep svg {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+  }
+
+  strong {
+    color: var(--color-ink);
+  }
+}
+
+.group {
+  display: grid;
+  gap: 0.85rem;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+
+  &__legend {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5rem;
+    margin-bottom: 0.85rem;
+    padding: 0;
+    font-family: var(--font-serif);
+    font-size: 1.3rem;
+
+    .optional {
+      font-family: var(--font-sans);
+      font-size: 0.8rem;
+      color: var(--color-ink-3);
+    }
+  }
+}
+
+.options {
+  display: grid;
+  gap: 0.6rem;
+
+  &--3 {
+    @include m.mq(md) {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  &--2 {
+    @include m.mq(sm) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+}
+
+.option-card--stack {
+  @include m.mq(md) {
+    flex-direction: column;
+  }
+}
+
+.option-card--compact {
+  align-items: center;
+}
+
+.option-card--check {
+  padding-right: 2.5rem;
+}
+
+.form-grid {
+  display: grid;
+  gap: 1.25rem;
+
+  @include m.mq(md) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.field--full {
+  @include m.mq(md) {
+    grid-column: 1 / -1;
+  }
+}
+
+.dropzone {
+  display: grid;
+  justify-items: center;
+  gap: 0.4rem;
+  padding: 2rem 1rem;
+  border: 1.5px dashed var(--color-border-strong);
+  border-radius: var(--radius-card);
+  background: var(--color-bg);
+  text-align: center;
+  font-size: 0.92rem;
+  cursor: pointer;
+  transition: border-color var(--duration-fast), background-color var(--duration-fast);
+
+  ::ng-deep svg {
+    width: 28px;
+    height: 28px;
+    margin-bottom: 0.25rem;
+    color: var(--color-accent);
+  }
+
+  &:hover,
+  &.is-over {
+    border-color: var(--color-accent);
+    background: var(--color-accent-soft);
+  }
+
+  &:focus-within {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  &__hint {
+    font-size: 0.78rem;
+    color: var(--color-ink-3);
+  }
+}
+
+.file {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+
+  &__icon {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: var(--color-accent-soft);
+    color: var(--color-accent-ink);
+
+    ::ng-deep svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  &__meta {
+    display: grid;
+    flex: 1;
+    min-width: 0;
+    font-size: 0.88rem;
+
+    strong {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    span {
+      color: var(--color-ink-3);
+      font-size: 0.8rem;
+    }
+  }
+
+  &__remove {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    color: var(--color-ink-3);
+
+    &:hover {
+      background: var(--color-danger-soft);
+      color: var(--color-danger);
+    }
+
+    ::ng-deep svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
+}
+
+.summary {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1.25rem 1.4rem;
+  border-radius: var(--radius-card);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+
+  .spec-list dd {
+    max-width: 60%;
+  }
+}
+
+.alert ::ng-deep svg {
+  width: 18px;
+  height: 18px;
+}
+
+.btn ::ng-deep svg {
+  width: 1.1em;
+  height: 1.1em;
+}
+
+.success {
+  display: grid;
+  justify-items: start;
+  gap: 1.25rem;
+  padding-block: 1rem;
+
+  &__icon {
+    display: grid;
+    place-items: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--color-energy-soft);
+    color: var(--color-energy-ink);
+
+    ::ng-deep svg {
+      width: 28px;
+      height: 28px;
+    }
+  }
+
+  &__steps {
+    display: grid;
+    gap: 0.75rem;
+    width: 100%;
+    margin: 0.5rem 0;
+    padding: 1.25rem;
+    border-radius: var(--radius-card);
+    background: var(--color-surface);
+
+    li {
+      display: flex;
+      gap: 0.85rem;
+      align-items: center;
+    }
+
+    span {
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--color-ink);
+      color: var(--color-on-dark);
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+  }
+}
+
+.aside {
+  display: grid;
+  gap: 1rem;
+
+  @include m.mq(lg) {
+    position: sticky;
+    top: calc(var(--header-height) + 1.5rem);
+  }
+
+  &__card {
+    @include m.card;
+    display: grid;
+    gap: 0.85rem;
+    padding: 1.5rem;
+    font-size: 0.9rem;
+
+    &--dark {
+      @include m.dark-surface;
+      border-color: transparent;
+
+      .eyebrow {
+        color: var(--color-accent);
+      }
+
+      a {
+        color: var(--color-on-dark);
+      }
+    }
+
+    ::ng-deep svg {
+      flex-shrink: 0;
+      width: 16px;
+      height: 16px;
+    }
+  }
+
+  &__row {
+    display: flex;
+    gap: 0.6rem;
+    align-items: flex-start;
+
+    ::ng-deep svg {
+      margin-top: 0.2rem;
+      color: var(--color-accent);
+    }
+
+    a {
+      text-decoration: none;
+    }
+  }
+
+  &__hours {
+    display: grid;
+    gap: 0.3rem;
+    padding-block: 0.75rem;
+    border-block: 1px solid var(--color-on-dark-border);
+
+    div {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    dt {
+      color: var(--color-on-dark-2);
+    }
+
+    dd {
+      margin: 0;
+    }
+  }
+
+  &__note {
+    font-size: 0.8rem;
+    line-height: 1.6;
+    color: var(--color-on-dark-2);
+  }
+
+  &__phone {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    text-decoration: none;
+
+    &:hover {
+      color: var(--color-accent-ink);
+    }
+  }
+
+  &__mail {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--color-ink-2);
+    text-decoration: none;
+    word-break: break-all;
+
+    &:hover {
+      color: var(--color-ink);
+    }
+  }
+
+  &__small {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    font-size: 0.8rem;
+    color: var(--color-ink-3);
+  }
+
+  &__badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 0;
+    padding: 0;
+  }
+}
