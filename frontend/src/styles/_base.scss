@@ -1,0 +1,224 @@
+@use 'variables' as v;
+@use 'mixins' as m;
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--header-height) + 1rem);
+
+  @media (prefers-reduced-motion: reduce) {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  min-height: 100vh;
+  background: var(--color-bg);
+  overflow-x: hidden;
+
+  &.no-scroll {
+    overflow: hidden;
+  }
+}
+
+img,
+picture,
+svg,
+video {
+  display: block;
+  max-width: 100%;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  background: none;
+  border: 0;
+  padding: 0;
+}
+
+ul[role='list'],
+ol[role='list'] {
+  list-style: none;
+  padding: 0;
+}
+
+:focus-visible {
+  @include m.focus-ring;
+}
+
+::selection {
+  background: var(--color-accent-soft);
+  color: var(--color-ink);
+}
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -4rem;
+  z-index: 1000;
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--radius-sm);
+  background: var(--color-dark);
+  color: var(--color-on-dark);
+  text-decoration: none;
+  transition: top var(--duration-fast);
+
+  &:focus {
+    top: 1rem;
+  }
+}
+
+.visually-hidden {
+  @include m.visually-hidden;
+}
+
+// --- Layout primitives --------------------------------------------------------
+
+.container {
+  @include m.container;
+}
+
+.container--narrow {
+  @include m.container(v.$container-narrow);
+}
+
+.section {
+  padding-block: clamp(4rem, 3rem + 4vw, 7.5rem);
+}
+
+.section--tight {
+  padding-block: clamp(3rem, 2.5rem + 2vw, 5rem);
+}
+
+.section--surface {
+  background: var(--color-surface);
+}
+
+.section--dark {
+  @include m.dark-surface;
+
+  .eyebrow {
+    color: var(--color-accent);
+  }
+
+  .lead,
+  .muted {
+    color: var(--color-on-dark-2);
+  }
+}
+
+.section-head {
+  display: grid;
+  gap: 1rem;
+  max-width: 46rem;
+  margin-bottom: clamp(2.5rem, 2rem + 2vw, 4rem);
+
+  &--center {
+    margin-inline: auto;
+    text-align: center;
+    justify-items: center;
+  }
+
+  &--split {
+    max-width: none;
+
+    @include m.mq(lg) {
+      grid-template-columns: 1.1fr 1fr;
+      align-items: end;
+      gap: 3rem;
+    }
+  }
+}
+
+.grid {
+  display: grid;
+  gap: clamp(1rem, 0.8rem + 1vw, 1.75rem);
+}
+
+.grid--2 {
+  @include m.mq(md) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.grid--3 {
+  @include m.mq(md) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @include m.mq(lg) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.grid--4 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  @include m.mq(lg) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.stack {
+  display: grid;
+  gap: 1rem;
+}
+
+.cluster {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.page-hero {
+  padding-top: clamp(3rem, 2rem + 4vw, 6rem);
+  padding-bottom: clamp(2.5rem, 2rem + 2vw, 4rem);
+  border-bottom: 1px solid var(--color-border);
+
+  h1 {
+    max-width: 18ch;
+    margin-block: 1rem 1.25rem;
+  }
+
+  .lead {
+    max-width: 44rem;
+  }
+}
+
+.fade-in {
+  animation: fade-in var(--duration-slow) var(--ease-out) both;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}

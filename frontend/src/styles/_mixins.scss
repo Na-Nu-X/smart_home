@@ -1,0 +1,124 @@
+@use 'sass:map';
+@use 'variables' as v;
+
+/// Mobile-first media query: `@include mq(md) { ... }`
+@mixin mq($bp) {
+  @if map.has-key(v.$breakpoints, $bp) {
+    @media (min-width: map.get(v.$breakpoints, $bp)) {
+      @content;
+    }
+  } @else {
+    @media (min-width: $bp) {
+      @content;
+    }
+  }
+}
+
+/// Max-width query for the rare desktop-first override.
+@mixin mq-down($bp) {
+  @media (max-width: calc(#{map.get(v.$breakpoints, $bp)} - 0.02px)) {
+    @content;
+  }
+}
+
+@mixin container($max: v.$container-max) {
+  width: 100%;
+  max-width: $max;
+  margin-inline: auto;
+  padding-inline: v.$gutter;
+
+  @include mq(md) {
+    padding-inline: 2rem;
+  }
+}
+
+@mixin card {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+}
+
+@mixin card-hover {
+  transition:
+    transform var(--duration-base) var(--ease-out),
+    box-shadow var(--duration-base) var(--ease-out),
+    border-color var(--duration-base) var(--ease-out);
+
+  &:hover,
+  &:focus-within {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--color-border-strong);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &:hover,
+    &:focus-within {
+      transform: none;
+    }
+  }
+}
+
+/// Image wrapper with a subtle zoom on parent hover.
+@mixin zoom-media($ratio: '4 / 3') {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: #{$ratio};
+  background: var(--color-surface);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--duration-slow) var(--ease-out);
+  }
+}
+
+@mixin zoom-trigger {
+  &:hover img,
+  &:focus-within img {
+    transform: scale(1.045);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &:hover img,
+    &:focus-within img {
+      transform: none;
+    }
+  }
+}
+
+@mixin focus-ring($offset: 3px) {
+  outline: 2px solid var(--color-accent);
+  outline-offset: $offset;
+}
+
+@mixin visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@mixin line-clamp($lines) {
+  display: -webkit-box;
+  -webkit-line-clamp: $lines;
+  line-clamp: $lines;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+@mixin tabular {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+}
+
+@mixin dark-surface {
+  background: var(--color-dark);
+  color: var(--color-on-dark);
+}

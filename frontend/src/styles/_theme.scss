@@ -1,0 +1,60 @@
+@use 'variables' as v;
+
+// Runtime theme – override any of these custom properties (e.g. in index.html
+// or a client-specific stylesheet) to rebrand without recompiling.
+:root {
+  --color-bg: #{v.$color-alabaster};
+  --color-surface: #{v.$color-travertine};
+  --color-card: #{v.$color-white};
+  --color-border: #{v.$color-border};
+  --color-border-strong: #d3cfc5;
+
+  --color-ink: #{v.$color-charcoal};
+  --color-ink-2: #{v.$color-ink-secondary};
+  --color-ink-3: #{v.$color-ink-muted};
+
+  --color-dark: #{v.$color-charcoal};
+  --color-dark-2: #1d2024;
+  --color-on-dark: #{v.$color-alabaster};
+  --color-on-dark-2: rgba(250, 249, 246, 0.72);
+  --color-on-dark-border: rgba(250, 249, 246, 0.14);
+
+  --color-accent: #{v.$color-amber};
+  --color-accent-hover: #{v.$color-amber-hover};
+  --color-accent-ink: #{v.$color-amber-ink};
+  --color-accent-soft: #{v.$color-amber-soft};
+  --color-on-accent: #{v.$color-charcoal};
+
+  --color-energy: #{v.$color-emerald};
+  --color-energy-ink: #{v.$color-emerald-ink};
+  --color-energy-soft: #{v.$color-emerald-soft};
+
+  --color-protocol: #{v.$color-slate-blue};
+  --color-protocol-ink: #{v.$color-slate-blue-ink};
+  --color-protocol-soft: #{v.$color-slate-blue-soft};
+
+  --color-danger: #{v.$color-danger};
+  --color-danger-soft: #{v.$color-danger-soft};
+
+  --font-serif: #{v.$font-serif};
+  --font-sans: #{v.$font-sans};
+
+  --radius-xs: #{v.$radius-xs};
+  --radius-sm: #{v.$radius-sm};
+  --radius-card: 16px;
+  --radius-lg: #{v.$radius-lg};
+  --radius-xl: #{v.$radius-xl};
+  --radius-pill: #{v.$radius-pill};
+
+  --shadow-sm: 0 1px 2px rgba(20, 22, 25, 0.04), 0 1px 1px rgba(20, 22, 25, 0.03);
+  --shadow-md: 0 8px 24px -12px rgba(20, 22, 25, 0.14), 0 2px 6px rgba(20, 22, 25, 0.04);
+  --shadow-lg: 0 24px 48px -24px rgba(20, 22, 25, 0.22), 0 6px 14px rgba(20, 22, 25, 0.05);
+  --shadow-glow: 0 0 0 6px rgba(217, 119, 6, 0.14);
+
+  --ease-out: #{v.$ease-out};
+  --duration-fast: #{v.$duration-fast};
+  --duration-base: #{v.$duration-base};
+  --duration-slow: #{v.$duration-slow};
+
+  --header-height: #{v.$header-height};
+}
