@@ -57,7 +57,11 @@ export class HomePage {
 
   protected readonly activeSolutions = computed(() => {
     const domain = this.activeDomain();
-    return domain ? this.solutions().filter((s) => s.domain.slug === domain.slug) : [];
+    return domain
+      ? this.solutions()
+          .filter((s) => s.domain.slug === domain.slug)
+          .sort((a, b) => Number(b.is_featured) - Number(a.is_featured))
+      : [];
   });
 
   protected readonly activeImage = computed(() => this.activeSolutions()[0]?.cover_image_url ?? '');

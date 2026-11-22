@@ -270,8 +270,8 @@
                   <a routerLink="/ochrana-osobnych-udajov" class="text-link">Ochrana osobných údajov</a>
                 </span>
               </label>
-              @if (error('gdpr_consent'); as msg) {
-                <p class="field__error">{{ msg }}</p>
+              @if (error('gdpr_consent')) {
+                <p class="field__error">Pre odoslanie je potrebný váš súhlas so spracovaním údajov.</p>
               }
             </div>
           }

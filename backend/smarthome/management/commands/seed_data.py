@@ -285,7 +285,7 @@ REFERENCES = [
         "display_order": 1,
         "photos": [
             ("1613490493576-7fde63acd811", "Vila pri súmraku – nasvietenie fasády a bazéna"),
-            ("1600210492486-724fe5c67fb0", "Večerná svetelná scéna v obývacej zóne"),
+            ("1600210492486-724fe5c67fb0", "Obývacia zóna s cirkadiánnym osvetlením a tienením"),
             ("1600566752355-35792bedcfea", "Kúpeľňa s orientačným nočným svetlom"),
             ("1621905251189-08b45d6a269e", "Prehľadný smart rozvádzač na mieru"),
         ],

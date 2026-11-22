@@ -6,6 +6,7 @@
 
 .estimator {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 1.5rem;
 
   @include m.mq(lg) {
@@ -81,6 +82,11 @@
     &--3 {
       @include m.mq(md) {
         grid-template-columns: repeat(3, minmax(0, 1fr));
+
+        .option-card {
+          flex-direction: column;
+          gap: 0.7rem;
+        }
       }
     }
 
